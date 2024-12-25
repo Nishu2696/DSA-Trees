@@ -1,0 +1,38 @@
+Question Link: https://leetcode.com/problems/find-mode-in-binary-search-tree/
+
+class Solution {
+    public int[] findMode(TreeNode root) {
+        Map<Integer, Integer> map = new HashMap<>();
+        int[] maxCount = {0};
+        List<Integer> modes = new ArrayList<>();
+        inOrderTraversal(root, map, maxCount, modes);
+
+        int[] result = new int[modes.size()];
+
+        for (int i = 0; i < modes.size(); i++) {
+            result[i] = modes.get(i);
+        }
+
+        return result;
+    }
+
+    public void inOrderTraversal(TreeNode root, Map<Integer, Integer> map, int[] maxCount, List<Integer> modes) {
+        if (root == null) {
+            return;
+        }
+        inOrderTraversal(root.left, map, maxCount, modes);
+
+        int count = map.getOrDefault(root.val, 0) + 1;
+        map.put(root.val, count);
+
+        if (count > maxCount[0]) {
+            maxCount[0] = count;
+            modes.clear();
+            modes.add(root.val);
+        } else if (count == maxCount[0]) {
+            modes.add(root.val);
+        }
+
+        inOrderTraversal(root.right, map, maxCount, modes);
+    }
+}
