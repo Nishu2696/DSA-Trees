@@ -1,0 +1,22 @@
+Question Link: https://leetcode.com/problems/sum-of-left-leaves/description/
+
+class Solution {
+    public int sumOfLeftLeaves(TreeNode root) {
+        return sumOfLeftNodes(root, false);
+    }
+
+    public int sumOfLeftNodes(TreeNode root, boolean leftNode) {
+        if (root == null) {
+            return 0;
+        }
+
+        if (root.left == null && root.right == null) {
+            return leftNode ? root.val : 0;
+        }
+
+        int leftValue = sumOfLeftNodes(root.left, true);
+        int rightValue = sumOfLeftNodes(root.right, false);
+
+        return leftValue + rightValue;
+    }
+}
