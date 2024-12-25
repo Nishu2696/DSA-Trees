@@ -1,0 +1,44 @@
+Question Link: https://leetcode.com/problems/invert-binary-tree/description/
+
+class Solution {
+    public TreeNode invertTree(TreeNode root) {
+        // DFS approach
+        // if (root == null) {
+        //     return null;
+        // }
+
+        // TreeNode temp = root.left;
+        // root.left = root.right;
+        // root.right = temp;
+
+        // invertTree(root.right);
+        // invertTree(root.left);
+
+        // return root;
+
+        // BFS approach
+
+        if (root == null) {
+            return null;
+        }
+
+        Queue<TreeNode> queue = new LinkedList<TreeNode>();
+        queue.add(root);
+
+        while (!queue.isEmpty()) {
+            TreeNode currentNode = queue.poll();
+            TreeNode temp = currentNode.left;
+            currentNode.left = currentNode.right;
+            currentNode.right = temp;
+
+            if (currentNode.left != null) {
+                queue.add(currentNode.left);
+            }
+            if (currentNode.right != null) {
+                queue.add(currentNode.right);
+            }
+        }
+
+        return root;
+    }
+}
