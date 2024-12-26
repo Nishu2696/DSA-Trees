@@ -1,0 +1,41 @@
+Question Link: https://leetcode.com/problems/binary-tree-inorder-traversal/
+
+class Solution {
+    // dfs approach
+    // public List<Integer> inorderTraversal(TreeNode root) {
+    //     List<Integer> nums = new ArrayList<>();
+    //     inorder(root, nums);
+    //     return nums;
+    // }
+
+    // public void inorder(TreeNode root, List<Integer> nums) {
+    //     if (root == null) {
+    //         return;
+    //     }
+    //     inorder(root.left, nums);
+    //     nums.add(root.val);
+    //     inorder(root.right, nums);
+    // }
+
+    // bfs approach
+
+    public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> ans = new ArrayList<>();
+        Stack<TreeNode> stack = new Stack<>();
+        if (root == null) {
+            return ans;
+        }
+
+        while (root != null || !stack.isEmpty()) {
+            while (root != null) {
+                stack.push(root);
+                root = root.left;
+            }
+            root = stack.pop();
+            ans.add(root.val);
+            root = root. right;
+        }
+
+        return ans;
+    }
+}
