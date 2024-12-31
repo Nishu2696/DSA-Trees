@@ -1,0 +1,113 @@
+Question Link: https://leetcode.com/problems/closest-nodes-queries-in-a-binary-search-tree/
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ * int val;
+ * TreeNode left;
+ * TreeNode right;
+ * TreeNode() {}
+ * TreeNode(int val) { this.val = val; }
+ * TreeNode(int val, TreeNode left, TreeNode right) {
+ * this.val = val;
+ * this.left = left;
+ * this.right = right;
+ * }
+ * }
+ */
+class Solution {
+    // inbuilt methods used for finding lowerkey and higherkey
+    // TreeMap<Integer, Integer> map = new TreeMap<>();
+    // public List<List<Integer>> closestNodes(TreeNode root, List<Integer> queries)
+    // {
+    // List<List<Integer>> ans = new ArrayList<>();
+    // helper(root);
+
+    // for (int num: queries) {
+    // Integer low = map.containsKey(num) ? Integer.valueOf(num) :
+    // map.lowerKey(num);
+    // Integer high = map.containsKey(num) ? Integer.valueOf(num) :
+    // map.higherKey(num);
+    // ans.add(Arrays.asList(low == null ? -1 : low, high == null ? -1 : high));
+    // }
+    // return ans;
+    // }
+
+    // public void helper(TreeNode root) {
+    // if (root == null) {
+    // return;
+    // }
+    // map.put(root.val, 0);
+    // helper(root.left);
+    // helper(root.right);
+    // }
+
+    // better approach without using any in-built method
+    public List<List<Integer>> closestNodes(TreeNode root, List<Integer> queries) {
+        List<List<Integer>> res = new ArrayList<>();
+        List<Integer> list = new ArrayList<>();
+
+        var stack = new ArrayDeque<TreeNode>();
+        TreeNode curr = root;
+
+        while (!stack.isEmpty() || curr != null) {
+            while (curr != null) {
+                stack.push(curr);
+                curr = curr.left;
+            }
+            curr = stack.pop();
+            list.add(curr.val);
+            curr = curr.right;
+        }
+
+        for (int query: queries) {
+            res.add(List.of(binarySearch1(query, list), binarySearch2(query, list)));
+        }
+
+        return res;
+    }
+
+    public int binarySearch1(int query, List<Integer> list) {
+        int n = list.size();
+        int start = 0;
+        int end = n - 1;
+
+        while (start <= end) {
+            int mid = (start + end) >> 1; //this will give us the index
+            int num = list.get(mid);
+
+            if (num == query) {
+                return num;
+            }
+            if (num < query) {
+                start = mid + 1;
+            } else {
+                end = mid - 1;
+            }
+        }
+
+        return end != -1 ? list.get(end) : -1;
+    }
+
+    public int binarySearch2(int query, List<Integer> list) {
+        int n = list.size();
+        int start = 0;
+        int end = n - 1;
+
+        while (start <= end) {
+            int mid = (start + end) >> 1; //this will give us the index
+            int num = list.get(mid);
+
+            if (num == query) {
+                return num;
+            }
+            if (num < query) {
+                start = mid + 1;
+            } else {
+                end = mid - 1;
+            }
+        }
+
+        return start != n ? list.get(start) : -1;
+    }
+}
