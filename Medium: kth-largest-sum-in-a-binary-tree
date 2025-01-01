@@ -1,5 +1,7 @@
 Question Link: https://leetcode.com/problems/kth-largest-sum-in-a-binary-tree/
 
+Similar to level order traversal question
+
 /**
  * Definition for a binary tree node.
  * public class TreeNode {
