@@ -1,0 +1,94 @@
+Question Link: https://www.naukri.com/code360/problems/boundary-traversal-of-binary-tree_790725?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf&leftPanelTabValue=DISCUSS
+
+/************************************************************
+
+ Following is the Binary Tree node structure:
+
+ class TreeNode {
+     int data;
+     TreeNode left;
+     TreeNode right;
+
+     TreeNode(int data) {
+         this.data = data;
+         this.left = null;
+         this.right = null;
+     }
+ }
+
+ ************************************************************/
+
+import java.util.List;
+
+public class Solution {
+    public static List<Integer> traverseBoundary(TreeNode root){
+        // Write your code here.
+        
+        List<Integer> answer = new ArrayList<>();
+        if (root == null) {
+            return answer;
+        }
+        if (!isLeafNode(root)) {
+            answer.add(root.data);
+        }
+        addLeftNodes(root, answer);
+        addLeaveNodes(root, answer);
+        addRightNodes(root, answer);
+
+        return answer;
+    }
+
+    public static boolean isLeafNode(TreeNode root) {
+        return root.left == null && root.right == null; 
+    }
+
+    public static void addLeftNodes(TreeNode root, List<Integer> answer) {
+        TreeNode curr = root.left;
+        while (curr != null) {
+            if (!isLeafNode(curr)) {
+                answer.add(curr.data);
+            }
+
+            if (curr.left != null) {
+                curr = curr.left;
+            } else {
+                curr = curr.right;
+            }
+        }
+    }
+
+    public static void addLeaveNodes(TreeNode root, List<Integer> answer) {
+        if (isLeafNode(root)) {
+            answer.add(root.data);
+            return;
+        }
+
+        if (root.left != null) {
+            addLeaveNodes(root.left, answer);
+        }
+        if (root.right != null) {
+            addLeaveNodes(root.right, answer);
+        }
+    }
+
+    public static void addRightNodes(TreeNode root, List<Integer> answer) {
+        List<Integer> tempAns = new ArrayList<>();
+        TreeNode currNode = root.right;
+
+        while (currNode != null) {
+            if (!isLeafNode(currNode)) {
+                tempAns.add(currNode.data);
+            }
+
+            if (currNode.right != null) {
+                currNode = currNode.right;
+            } else {
+                currNode = currNode.left;
+            }
+        }
+
+        for (int i = tempAns.size() - 1; i >= 0 ; i--) {
+            answer.add(tempAns.get(i));
+        }
+    }
+}
