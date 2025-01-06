@@ -1,0 +1,75 @@
+Question Link: https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ * int val;
+ * TreeNode left;
+ * TreeNode right;
+ * TreeNode() {}
+ * TreeNode(int val) { this.val = val; }
+ * TreeNode(int val, TreeNode left, TreeNode right) {
+ * this.val = val;
+ * this.left = left;
+ * this.right = right;
+ * }
+ * }
+ */
+class Solution {
+    // BFS APPROACH
+
+    // public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+    //     // List<List<Integer>> answer = new ArrayList<>();
+    //     // Queue<TreeNode> queue = new LinkedList<>();
+    //     // queue.add(root);
+    //     // int level = 0;
+
+    //     // while (!queue.isEmpty()) {
+    //     //     int currQueueSize = queue.size();
+    //     //     List<Integer> result = new ArrayList<>();
+    //     //     for (int i = 0; i < currQueueSize; i++) {
+    //     //         TreeNode currNode = queue.poll();
+    //     //         if (currNode != null) {
+    //     //             result.add(currNode.val);
+    //     //             if (currNode.left != null) {
+    //     //                 queue.add(currNode.left);
+    //     //             }
+    //     //             if (currNode.right != null) {
+    //     //                 queue.add(currNode.right);
+    //     //             }
+    //     //         }
+    //     //     }
+    //     //     if (!result.isEmpty()) {
+    //     //         if (level % 2 == 1) {
+    //     //             Collections.reverse(result);
+    //     //         }
+    //     //         answer.add(result);
+    //     //     }
+    //     //     level++;
+    //     // }
+
+    //     // return answer;
+    // }
+
+    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        List<List<Integer>> result = new ArrayList<>();
+        dfs(root, result, 0);
+        return result;
+    }
+
+    public void dfs(TreeNode root, List<List<Integer>> result, int level) {
+        if (root != null) {
+            if (level == result.size()) {
+                List<Integer> output = new ArrayList<>();
+                result.add(output);
+            }
+            if (level % 2 == 1) {
+                result.get(level).add(0, root.val);
+            } else {
+                result.get(level).add(root.val);
+            }
+            dfs(root.left, result, level + 1);
+            dfs(root.right, result, level + 1);
+        }
+    }
+}
