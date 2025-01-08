@@ -1,0 +1,56 @@
+Question LinK: https://www.geeksforgeeks.org/problems/top-view-of-binary-tree/1
+
+// User function Template for Java
+
+/*
+class Node{
+    int data;
+    Node left;
+    Node right;
+    Node(int data){
+        this.data = data;
+        left=null;
+        right=null;
+    }
+}
+*/
+class Pair<F, S> {
+    public final F first;
+    public final S second;
+
+    public Pair(F first, S second) {
+        this.first = first;
+        this.second = second;
+    }
+}
+class Solution {
+    // Function to return a list of nodes visible from the top view
+    // from left to right in Binary Tree.
+    static ArrayList<Integer> topView(Node root) {
+        ArrayList<Integer> al=new ArrayList<>();
+        if(root==null) return al;
+        Map<Integer,Integer> hm=new TreeMap<>();
+          Queue<Pair<Node, Integer>> queue = new LinkedList<>();
+        
+        queue.add(new Pair<>(root,0));
+        while(!queue.isEmpty()){
+            Pair<Node,Integer> pair=queue.poll();
+            Node node=pair.first;
+            int line=pair.second;
+            
+            if(!hm.containsKey(line)){
+                hm.put(line,node.data);
+            }
+            if(node.left!=null){
+                queue.add(new Pair<>(node.left,line-1));
+            }
+            if(node.right!=null){
+                queue.add(new Pair<>(node.right,line+1));
+            }
+        }
+        for(int i:hm.values()){
+            al.add(i);
+        }
+        return al;
+    }
+}
