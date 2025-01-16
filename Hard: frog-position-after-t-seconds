@@ -1,0 +1,67 @@
+Question Link: https://leetcode.com/problems/frog-position-after-t-seconds/
+
+class Solution {
+    class Node {
+        int val;
+        double positionPoint;
+        Node(int val, double positionPoint) {
+            this.val = val;
+            this.positionPoint = positionPoint;
+        }
+    }
+    public double frogPosition(int n, int[][] edges, int t, int target) {
+        HashMap<Integer, List<Integer>> adjList = new HashMap<>();
+        for (int[] edge: edges) {
+            int start = edge[0];
+            int dest = edge[1];
+            adjList.putIfAbsent(start, new ArrayList<Integer>());
+            adjList.putIfAbsent(dest, new ArrayList<Integer>());
+            adjList.get(start).add(dest);
+            adjList.get(dest).add(start);
+        }
+
+        Queue<Node> queue = new LinkedList<>();
+        Node root = new Node(1, 1.0);
+        queue.offer(root);
+
+        boolean[] visited = new boolean[n+1];
+        visited[1] = true;
+
+        while (!queue.isEmpty()) {
+            if (t < 0) {
+                return 0.0;
+            }
+            int n1 = queue.size();
+            for (int i = 0; i < n1; i++) {
+                Node node = queue.poll();
+                int child = 0;
+                if (adjList.containsKey(node.val)) {
+                    for (int neighbors: adjList.get(node.val)) {
+                        if (!visited[neighbors]) {
+                            child++;
+                        }
+                    }
+                    double levelCosts = node.positionPoint/child;
+
+                    for (int neighbors: adjList.get(node.val)) {
+                        if (!visited[neighbors]) {
+                            queue.offer(new Node(neighbors, levelCosts));
+                            visited[neighbors] = true;
+                        }
+                    }
+                }
+
+                if (node.val == target) {
+                    if (t == 0 || child == 0) {
+                        return node.positionPoint;
+                    } else {
+                        return 0.0;
+                    }
+                }
+            }
+            t--;
+        }
+
+        return 0.0;
+    }
+}
