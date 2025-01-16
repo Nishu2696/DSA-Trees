@@ -1,0 +1,100 @@
+Question Link: https://leetcode.com/problems/merge-bsts-to-create-single-bst/
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ * int val;
+ * TreeNode left;
+ * TreeNode right;
+ * TreeNode() {}
+ * TreeNode(int val) { this.val = val; }
+ * TreeNode(int val, TreeNode left, TreeNode right) {
+ * this.val = val;
+ * this.left = left;
+ * this.right = right;
+ * }
+ * }
+ */
+class Solution {
+    HashMap<Integer, List<TreeNode>> leaves = new HashMap<>();
+    HashMap<Integer, TreeNode> root = new HashMap<>();
+
+    public TreeNode canMerge(List<TreeNode> trees) {
+        for (TreeNode node : trees) {
+            root.put(node.val, node);
+            if (node.left != null) {
+                List<TreeNode> child = leaves.get(node.left.val);
+                if (child == null) {
+                    child = new LinkedList<TreeNode>();
+                }
+                child.add(node);
+                leaves.put(node.left.val, child);
+            }
+            if (node.right != null) {
+                List<TreeNode> child = leaves.get(node.right.val);
+                if (child == null) {
+                    child = new LinkedList<TreeNode>();
+                }
+                child.add(node);
+                leaves.put(node.right.val, child);
+            }
+        }
+
+        TreeNode bst = null;
+        for (TreeNode node : trees) {
+            if (!leaves.containsKey(node.val)) {
+                bst = node;
+                break;
+            }
+        }
+
+        if (bst == null) {
+            return null;
+        }
+
+        mergeBST(bst);
+
+        if (root.size() == 1 && isValidBST(bst, Integer.MIN_VALUE, Integer.MAX_VALUE)) {
+            return bst;
+        }
+        return null;
+    }
+
+    public void mergeBST(TreeNode node) {
+        if (node == null) {
+            return;
+        }
+        if (node.left != null) {
+            if (root.containsKey(node.left.val)) {
+                node.left = root.get(node.left.val);
+                root.remove(node.left.val);
+            }
+        }
+        if (node.right != null) {
+            if (root.containsKey(node.right.val)) {
+                node.right = root.get(node.right.val);
+                root.remove(node.right.val);
+            }
+        }
+
+        mergeBST(node.left);
+        mergeBST(node.right);
+    }
+
+    public boolean isValidBST(TreeNode node, int min, int max) {
+        if (node.val < min || node.val > max) {
+            return false;
+        }
+
+        boolean left = true, right = true;
+
+        if (node.left != null) {
+            left = isValidBST(node.left, min, node.val);
+        }
+        if (node.right != null) {
+            right = isValidBST(node.right, node.val, max);
+        }
+
+        return node.val > min && node.val < max && left && right;
+    }
+}
