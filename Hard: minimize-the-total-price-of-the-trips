@@ -1,0 +1,92 @@
+Question Link: https://leetcode.com/problems/minimize-the-total-price-of-the-trips/
+
+class Solution {
+    public int minimumTotalPrice(int n, int[][] edges, int[] price, int[][] trips) {
+        // tree = [[1], [0,2,3], [1], [1]]
+        // counts = {3: 2, 1: 3, 0: 1, 2: 2}
+        // n = 4
+        // bfs = tree, 0, 3, counts -> vis = [t, t, t, t] -> par = [-1, 0, 1, 1]
+        // bfs = tree, 2, 1, counts -> vis = [f, t, t, f] -> par = [-1, 2, -1, -1]
+        // bfs = tree, 2, 3, counts -> vis = [t, t, t, t] -> par = [1, 2, -1, 1]
+        // currentPrice = [2, 6, 20, 12]
+        // result = [24, 23]
+        // helper = tree, 0, -1, cp -> neighbors = tree.get(0) -> [1] -> [24, 23]
+        // helper = tree, 1, 0, cp -> neighbors = tree.get(1) -> [0, 2, 3] -> [22, 35]
+        // helper = tree, 2, 1, cp -> neigbors = tree.get(2) -> [1] -> [20, 10]
+        // helper = tree, 3, 1, cp -> neighbors = tree.get(3) -> [1] -> [12, 6]
+        // return Math.min(result[0], result[1])
+
+        List<List<Integer>> adjList = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            adjList.add(new ArrayList<>());
+        }
+
+        for (int[] edge: edges) {
+            adjList.get(edge[0]).add(edge[1]);
+            adjList.get(edge[1]).add(edge[0]);
+        }
+
+        Map<Integer, Integer> counts = new HashMap<>();
+
+        for (int[] trip: trips) {
+            bfs(adjList, trip[0], trip[1], counts);
+        }
+
+        int[] currPrice = new int[n];
+        for (int i = 0; i < n; i++) {
+            currPrice[i] = counts.getOrDefault(i, 0) * price[i];
+        }
+
+        int[] result = helper(adjList, 0, -1, currPrice);
+        return Math.min(result[0], result[1]);
+    }
+
+    public void bfs(List<List<Integer>> adjList, int source, int dest, Map<Integer, Integer> counts) {
+        int n = adjList.size();
+        Queue<Integer> queue = new ArrayDeque<>();
+        boolean[] visited = new boolean[n];
+        int[] parent = new int[n];
+        Arrays.fill(parent, -1);
+
+        queue.offer(source);
+        visited[source] = true;
+
+        while (!queue.isEmpty()) {
+            int curr = queue.poll();
+            if (curr == dest) {
+                break;
+            }
+            for (int neighbors: adjList.get(curr)) {
+                if (!visited[neighbors]) {
+                    visited[neighbors] = true;
+                    parent[neighbors] = curr;
+                    queue.offer(neighbors);
+                }
+            }
+        }
+
+        int curr = dest;
+        while (curr != -1) {
+            counts.put(curr, counts.getOrDefault(curr, 0) + 1);
+            curr = parent[curr];
+        }
+    }
+
+    public int[] helper(List<List<Integer>> adjList, int curr, int parent, int[] currentPrice) {
+        int whole = 0;
+        int halved = 0;
+
+        List<Integer> neighbors = adjList.get(curr);
+
+        for (int child: neighbors) {
+            if (child == parent) {
+                continue;
+            }
+            int[] childList = helper(adjList, child, curr, currentPrice);
+            whole = whole + childList[0];
+            halved = halved + Math.min(childList[0], childList[1]);
+        }
+
+        return new int[] {currentPrice[curr] + halved , currentPrice[curr] / 2 + whole};
+    }
+}
