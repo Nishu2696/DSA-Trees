@@ -1,0 +1,43 @@
+Question Link: https://leetcode.com/problems/binary-tree-cameras/
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    private int ans = 0;
+    public int minCameraCover(TreeNode root) {
+        return dfs(root) > 2 ? ans + 1 : ans;
+    }
+
+    public int dfs (TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int val = dfs(root.left) + dfs(root.right);
+        // Returns:
+        // 0: Ignore (Monitored or under surveillance)
+        // 1: Placed camera in child (Camera present)
+        // 3: Need camera in parent (Un-monitored or needs monitoring)
+        if (val == 0) {
+            return 3;
+        }
+        if (val < 3) {
+            return 0;
+        }
+        // val is greater than 3, hence needs a camera for monitoring
+        ans++;
+        return 1;
+    }
+}
