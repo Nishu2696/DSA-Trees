@@ -1,0 +1,27 @@
+Question Link: https://leetcode.com/problems/house-robber/submissions/1362645331/
+
+class Solution {
+    public int rob(int[] nums) {
+        HashMap<Integer, Integer> memo = new HashMap<>();
+        return houseRobbery(nums, 0, memo);
+    }
+
+    public int houseRobbery(int[] nums, int currentIndex, HashMap<Integer, Integer> memo) {
+        if (currentIndex >= nums.length) {
+            return 0;
+        }
+
+        int currentKey = currentIndex;
+
+        if (memo.containsKey(currentKey)) {
+            return memo.get(currentKey);
+        }
+
+        int yesRobbery = nums[currentKey] + houseRobbery(nums, currentKey + 2, memo);
+        int noRobbery = houseRobbery(nums, currentKey + 1, memo);
+
+        memo.put(currentKey, Math.max(yesRobbery, noRobbery));
+
+        return Math.max(yesRobbery, noRobbery);
+    }
+}
