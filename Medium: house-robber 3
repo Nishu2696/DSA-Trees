@@ -1,0 +1,55 @@
+Question Link: https://leetcode.com/problems/house-robber-iii/submissions/1517142430/
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    public int rob(TreeNode root) {
+        // num = [7,6]
+        // dfs(root)
+        // Parent 3:- left3root = [] -> res2root returned = [2,3]
+        // Parent 3, leftChild of 3 is 2:- left2rootcL = [0,0]
+        // Parent 3, leftChild of 3 is 2:- right2root = [] -> res3root returned = [3,0]
+        // Parent 2, rightChild of 2 is 3:- left3rootcR = [0,0]
+        // Parent 2, rightChild of 2 is 3:- right3root = [0,0]
+        // response of current node = 3 :- res3root = [3,0]
+        // response of current node = 2 :- res2root = [2,3]
+        // Parent 3, rightChild of 3 is 3:- right3root =[] -> res3RootR returned = [3,1]
+        // Parent 3, leftChild of 3 is 3:- left3rootR = [0,0]
+        // Parent 3, leftChild of 3 is 3:- right3rootR = [] -> res1root returned = [1, 0]
+        // Parent 3, leftChild of 3 is 1:- left1root = [0,0]
+        // Parent 3, rightChild of 3 is 1:- right1root = [0,0]
+        // response of current node = 1 :- res1root = [1,0]
+        // response of current node = 3 :- res3RootR = [3, 1]
+        // response of current node = 3 :- res3RootParent = [7, 6]
+
+        int[] res = dfs(root);
+        return Math.max(res[0], res[1]);
+    }
+
+    public int[] dfs(TreeNode root) {
+        if (root == null) {
+            return new int[2];
+        }
+        int[] left = dfs(root.left);
+        int[] right = dfs(root.right);
+        int[] res = new int[2];
+
+        res[0] = left[1] + right[1] + root.val;
+        res[1] = Math.max(left[0], left[1]) + Math.max(right[0], right[1]);
+
+        return res;
+    }
+}
