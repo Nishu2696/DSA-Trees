@@ -1,0 +1,68 @@
+Question Link: https://leetcode.com/problems/smallest-missing-genetic-value-in-each-subtree/
+
+class Solution {
+        // n = 4
+        // parents = [-1, 0, 0, 2]
+        // nums = [1,2,3,4]
+        // res = [5,1,1,1]
+        // oneIndex = 0
+        // i = 1 -> 2 -> 3
+        // graph = {0: [1, 2], 2: [3]}
+        // visited = [2, 4, 3, 1]
+        // parentIter = 0 -> -1
+        // miss = 1 -> 2 -> 3 -> 4 -> 5
+        // dfs(parentIter, graph, visited, nums)
+        // dfs(0, graph, visited, nums)
+        // dfs(1, graph, visited, nums)
+        // dfs(2, graph, visited, nums)
+        // dfs(3, graph, visited, nums)
+    public int[] smallestMissingValueSubtree(int[] parents, int[] nums) {
+        int n = parents.length;
+        int[] res = new int[n];
+        for (int i = 0; i < n; i++) {
+            res[i] = 1;
+        }
+        int oneIndex = -1;
+        for(int i = 0; i < n; i++) {
+            if (nums[i] == 1) {
+                oneIndex = i;
+                break;
+            }
+        }
+        if (oneIndex == -1) { //reason being the lease value can be 1, which we have already set it in the initialization of res
+            return res;
+        }
+
+        Map<Integer, Set<Integer>> map = new HashMap<>();
+        for (int i = 1; i < n; i++) {
+            Set<Integer> children = map.getOrDefault(parents[i], new HashSet<>());
+            children.add(i);
+            map.put(parents[i], children);
+        }
+
+        Set<Integer> visited = new HashSet<>();
+
+        int parentIter = oneIndex;
+        int miss = 1;
+        while (parentIter >= 0) {
+            dfs(parentIter, visited, map, nums);
+            while(visited.contains(miss)) {
+                miss++;
+            }
+            res[parentIter] = miss;
+            parentIter = parents[parentIter];
+        }
+
+        return res;
+    }
+
+    public void dfs(int index, Set<Integer> visited, Map<Integer, Set<Integer>> map, int[] nums) {
+        if (!visited.contains(nums[index])) {
+            Set<Integer> children = map.getOrDefault(index, new HashSet<Integer>());
+            for(int child: children) {
+                dfs(child, visited, map, nums);
+            }
+            visited.add(nums[index]);
+        }
+    }
+}
