@@ -1,0 +1,38 @@
+Question Link: https://leetcode.com/problems/kth-ancestor-of-a-tree-node/
+
+class TreeAncestor {
+    int[][] dp;
+    int max;
+    public TreeAncestor(int n, int[] parent) {
+        max = (int) (Math.log(n) / Math.log(2)) + 1;
+        dp = new int[n][max];
+
+        for (int i = 0; i < n; i++) {
+            dp[i][0] = parent[i];
+        }
+
+        for (int j = 1; j < max; j++) {
+            for (int i = 0; i < n; i++) {
+                int mid = dp[i][j - 1];
+                if (mid != -1) {
+                    dp[i][j] = dp[mid][j-1];
+                } else {
+                    dp[i][j] = -1;
+                }
+            }
+        }
+    }
+    
+    public int getKthAncestor(int node, int k) {
+        for (int j = 0; j < max; j++) {
+            if ((k & (1 << j)) > 0) {
+                node = dp[node][j];
+                if (node == -1) {
+                    return -1;
+                }
+            }
+        }
+
+        return node;
+    }
+}
