@@ -45,6 +45,7 @@ class Solution {
             TreeNode temp = stack.pop();
             if (temp != null) {
                 ans.add(temp.val);
+                // stack is LIFO: hence right is pushed first and then left
                  if (temp.right != null) {
                     stack.push(temp.right);
                 }
