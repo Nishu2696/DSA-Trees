@@ -1,4 +1,4 @@
-Question Link: https://leetcode.com/problems/house-robber/submissions/1362645331/
+[House Robber Submission](https://leetcode.com/problems/house-robber/submissions/1362645331/)
 
 class Solution {
     public int rob(int[] nums) {
